@@ -1,46 +1,33 @@
-fetch('data.json')
-    .then(response => response.json())
-    .then(posts => {
-        const postContainer = document.getElementById("post-container");
-        posts.forEach(post => {
-            postContainer.appendChild(createPost(post));
-        });
-    });
-
-function createPost(post) {
-    const postElement = document.createElement("div");
-    postElement.classList.add("post-container");
-    postElement.innerHTML = `
-        <div class="post-header">
-            <img src="https://freelogopng.com/images/all_img/1658834095reddit-logo-png.png" alt="Reddit Logo">
-            <span>${post.subreddit} • ${post.time}</span>
-        </div>
-        <div class="post-title">${post.title}</div>
-        <img class="post-image" src="${post.image}" alt="Reddit Post Image">
-        <div class="post-footer">
-            <span>👍 ${post.likes}</span>
-            <span>💬 ${post.comments}</span>
-            <span>🏆 ${post.awards}</span>
-            <span>🔗 Delen</span>
-        </div>
-    `;
-    return postElement;
-}
-
-function fetchMorePosts() {
-    fetch('data.json')
-        .then(response => response.json())
-        .then(posts => {
-            const postContainer = document.getElementById("post-container");
-            posts.forEach(post => {
-                postContainer.appendChild(createPost(post));
-            });
-        });
-}
-
-window.addEventListener("scroll", () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        fetchMorePosts();
-    }
-});
-
+const monthYear = document.getElementById("monthYear");
+            const daysContainer = document.getElementById("days");
+            let date = new Date();
+            const today = new Date();
+    
+            function renderCalendar() {
+                const year = date.getFullYear();
+                const month = date.getMonth();
+                monthYear.textContent = date.toLocaleString('nl-NL', { month: 'long', year: 'numeric' });
+                daysContainer.innerHTML = "";
+    
+                const firstDay = new Date(year, month, 1).getDay();
+                const lastDate = new Date(year, month + 1, 0).getDate();
+                for (let i = 0; i < firstDay; i++) {
+                    daysContainer.innerHTML += `<div></div>`;
+                }
+                for (let i = 1; i <= lastDate; i++) {
+                    const isToday = year === today.getFullYear() && month === today.getMonth() && i === today.getDate();
+                    daysContainer.innerHTML += `<div class='day ${isToday ? "today" : ""}'>${i}</div>`;
+                }
+            }
+            
+            function prevMonth() {
+                date.setMonth(date.getMonth() - 1);
+                renderCalendar();
+            }
+    
+            function nextMonth() {
+                date.setMonth(date.getMonth() + 1);
+                renderCalendar();
+            }
+    
+            renderCalendar();
